@@ -45,7 +45,7 @@ public class RawArrayBenchmark {
 
     private void writeArray(String[] array) {
         for (int n = 0; n < Consts.ARRAY_SIZE; n++) {
-            array[n] = new Integer(n).toString();
+            array[n] = Integer.valueOf(n).toString();
         }
     }
 

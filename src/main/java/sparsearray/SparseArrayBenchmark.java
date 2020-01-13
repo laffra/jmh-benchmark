@@ -68,7 +68,7 @@ public class SparseArrayBenchmark {
     private void writeArray(SparseArray<String> array) {
         int increment = 100 / this.percentageFilled;
         for (int n = 0; n < Consts.ITERATION_COUNT; n += increment) {
-            array.put(n, new Integer(n).toString());
+            array.put(n, Integer.valueOf(n).toString());
         }
     }
 }
