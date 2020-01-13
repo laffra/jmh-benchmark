@@ -32,7 +32,7 @@ public class SizeTest {
   public void thousandElementsGivesSizeThousand() {
     SparseArray<String> array = new SparseArray<>();
     for (int n = 0; n < 1000; n++) {
-      array.put(n, new Integer(n).toString());
+      array.put(n, Integer.valueOf(n).toString());
     }
     assertEquals(1000, array.size());
   }

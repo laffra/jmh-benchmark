@@ -18,7 +18,7 @@ public class IterationTest {
     Map<Integer, String> entries = array.entries();
     assertEquals(entries.size(), 1);
     entries.forEach((key, value) -> {
-      assertEquals(new Integer(4), key);
+      assertEquals(Integer.valueOf(4), key);
     });
   }
 
