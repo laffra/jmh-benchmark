@@ -4,14 +4,14 @@ This repository contains a JMH project to run microbenchmarks on Java code.
 
 In this repo you will find some simple Java source, that implements a so-called
 `SparseArray`, as found in the Android runtime. The main idea is to offer up
-an API similar to a normal array, but to optimize for the case where there are
-gaps in the range of indices into the array.
+an API similar to a normal array, but to optimize for the memory case where there
+are gaps in the range of indices into the array.
 
 The main goal of `SparseArray` is to save memory, as a normal array forces the
 JVM to allocate all the memory, even when the indices in the array are not used.
 The golden rule of performance is that it is a space-time tradeoff. So, if we
-are saving space, what are we sacrificing in performance? That is the goal of
-the JMH benchmark we show here.
+are saving space, what are we sacrificing in performance? Answering that question
+is the goal of the JMH benchmark we show here.
 
 Java benchmarks are hard to write correctly. The
 [JMH benchmark](http://tutorials.jenkov.com/java-performance/jmh.html)
@@ -28,8 +28,12 @@ in three different formats:
  - As a set of two arrays using binary search on the keys
 
  Option 3 is the most memory efficient, not having the overhead of an array
- list. It also does not have the autoboxing overhead of Java collections, such as `TreeMap`.
- What we would like to know is which one performs best, performance wise.
+ list. It also does not have the autoboxing overhead of Java collections, such as
+ `TreeMap` does, as its keys have to be a subclass of `Object` and cannot be
+ primitive data types, such as `int`. When using and `int` to index an `ArrayList`
+ or a `Map`, it gets autoboxed to an `Integer`, which adds extra memory overhead.
+ 
+ What we would like to know is which of our strategies performs best, performance wise.
  In other words, which one gives us the best space-time tradeoff?
 
  # Getting Started
