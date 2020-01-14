@@ -92,19 +92,15 @@ As part of the build, the unit tests are executed using
 
 ![Alt text](images/unit-test-results.png)
 
-The JMH benchmark requires a special build step, using Maven:
-
-![Alt text](images/building-the-project.png)
-
-Finally, the benchmarks are executed by running the generated benchmarks
-jar, produced by the build step:
+The JMH benchmark requires a special build step, using Maven, `mvn install`.
+After running the build, the benchmarks are executed by running the generated
+benchmarks jar, produced by the build step:
 
 ![Alt text](images/running-the-benchmark.png)
 
-Due to the provisioning of gitpod's servers, the benchmark will run *really*
-slow, so I preferred to run them on my MacBook, but technically, the
-entire development/test/build/benchmark loops can be done entirely in the
-browser. We live in exciting times indeed.
+The benchmark ran a bit slow on the gitpod server, so I ran them on
+my MacBook. That said, the entire development/test/build/benchmark
+loops can be done entirely in the browser. We live in exciting times indeed.
 
 # The Results
 
