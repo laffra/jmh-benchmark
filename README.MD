@@ -144,14 +144,91 @@ Some observations:
 - Raw arrays, i.e., using `String[]` is by far the fastest. This is not too
   surprising of course.
 - Reading the values from a `String[]` and discarding their values directly
-  allows the JIT to optimize away a useless operation.
+  allows the JIT to optimize operations that do not have any side effects.
+  See the next section below for more details on this.
 - `ArrayList` and `TreeMap` implementations for a sparse array are roughly
   equivalent, as both have `O(1)` lookup complexity. The array with binary search
   has `O(log n)` complexity, which shows above, adding about 5% extra time.
 
+# Lies, Damn Lies, and Benchmarks
+
+In the results above, our microbenchmark for raw array gets was optimized
+highly by the JIT. This makes one of our scenarios be incompatible with the
+others. This is a common pitfall with benchmarks. The
+[Avoiding Benchmarking Pitfalls on the JVM](https://www.oracle.com/technical-resources/articles/java/architect-benchmarking.html) is a good read on this topic.
+
+For clarity, I also ran the benchmark with the JIT turned off. The result:
+
+```
+enchmark                            (implementationType)  (percentageFilled)  Mode  Cnt    Score    Error  Units
+RawArrayBenchmark.getMoreThanPut                      N/A                   1  avgt   10    8.049 ±  0.985  ms/op
+RawArrayBenchmark.getMoreThanPut                      N/A                  10  avgt   10    8.119 ±  1.064  ms/op
+RawArrayBenchmark.getMoreThanPut                      N/A                 100  avgt   10    9.105 ±  1.181  ms/op
+RawArrayBenchmark.put                                 N/A                   1  avgt   10    0.336 ±  0.077  ms/op
+RawArrayBenchmark.put                                 N/A                  10  avgt   10    0.387 ±  0.053  ms/op
+RawArrayBenchmark.put                                 N/A                 100  avgt   10    0.985 ±  0.150  ms/op
+SparseArrayBenchmark.getMoreThanPut                   MAP                   1  avgt   10  165.106 ± 36.726  ms/op
+SparseArrayBenchmark.getMoreThanPut                   MAP                  10  avgt   10  224.850 ± 47.055  ms/op
+SparseArrayBenchmark.getMoreThanPut                   MAP                 100  avgt   10  325.564 ± 28.057  ms/op
+SparseArrayBenchmark.getMoreThanPut                  LIST                   1  avgt   10  183.968 ± 29.835  ms/op
+SparseArrayBenchmark.getMoreThanPut                  LIST                  10  avgt   10  255.518 ± 54.604  ms/op
+SparseArrayBenchmark.getMoreThanPut                  LIST                 100  avgt   10  320.482 ± 32.088  ms/op
+SparseArrayBenchmark.getMoreThanPut                BINARY                   1  avgt   10  151.586 ± 11.199  ms/op
+SparseArrayBenchmark.getMoreThanPut                BINARY                  10  avgt   10  210.372 ± 10.625  ms/op
+SparseArrayBenchmark.getMoreThanPut                BINARY                 100  avgt   10  302.017 ± 68.435  ms/op
+SparseArrayBenchmark.put                              MAP                   1  avgt   10    0.012 ±  0.001  ms/op
+SparseArrayBenchmark.put                              MAP                  10  avgt   10    0.141 ±  0.032  ms/op
+SparseArrayBenchmark.put                              MAP                 100  avgt   10    1.350 ±  0.230  ms/op
+SparseArrayBenchmark.put                             LIST                   1  avgt   10    0.017 ±  0.004  ms/op
+SparseArrayBenchmark.put                             LIST                  10  avgt   10    0.136 ±  0.043  ms/op
+SparseArrayBenchmark.put                             LIST                 100  avgt   10    1.118 ±  0.024  ms/op
+SparseArrayBenchmark.put                           BINARY                   1  avgt   10    0.014 ±  0.006  ms/op
+SparseArrayBenchmark.put                           BINARY                  10  avgt   10    0.131 ±  0.038  ms/op
+SparseArrayBenchmark.put                           BINARY                 100  avgt   10    1.225 ±  0.160  ms/op
+```
+
+If we zoom in on the raw array case, the data looks like this:
+
+```
+Benchmark                            %    NoJIT  JIT
+RawArrayBenchmark.getMoreThanPut     1    8.049  0.289
+RawArrayBenchmark.getMoreThanPut     10   8.119  0.302
+RawArrayBenchmark.getMoreThanPut     100  9.105  0.312
+RawArrayBenchmark.put                1    0.336  0.308
+RawArrayBenchmark.put                10   0.387  0.325
+RawArrayBenchmark.put                100  0.985  0.329
+```
+
+It becomes quite clear what impact the JIT has on our microbenchmark.
+Before relying on benchmark results, one should make certain all the
+code paths are actually visited, and not optimized away. That is the
+case in my benchmark loop here:
+
+```
+private void readArray(String[] array) {
+    for (int count = 0; count < Consts.ITERATION_COUNT; count++) {
+        for (int n = 0; n < Consts.ITERATION_COUNT; n++) {
+            String value = array[n];  // The JIT completely removes this
+        }
+    }
+}
+```
+
+# Monitoring the JIT
+
+The summary from the previous section is that while writing benchmarks,
+you will want to watch what the JIT is doing. Step 1 is to make the JVM
+verbose, such as by using `-XX:+PrintCompilation` and `-XX:+CITime`.
+
+The generated logs can be complex and hard to read.
+Check out [JitWatch](https://github.com/AdoptOpenJDK/jitwatch). It helps
+with analyzing JVM execution logs, by showing inlining decisions, hot methods,
+bytecodes, and assembly.
+
 # Replicating the Results
 
-If you want to replicate the results for yourself, you can
+If you want to replicate the results for this JMH benchmark
+project for yourself, you can
 run the following commands in a shell:
 
 - `git clone https://github.com/laffra/jmh-benchmark.git`
