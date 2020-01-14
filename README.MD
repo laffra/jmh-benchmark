@@ -76,7 +76,7 @@ public class SparseArrayBenchmark {
 
 # Development
 
-I used a local istallation of VS Code for most editing and benchmarking,
+I used a local installation of VS Code for most editing and benchmarking,
 on a MacBook Pro laptop. The `README.MD` you are reading now I actually
 wrote in a [gitpod](https:/gitpod.io) instance. This allows editing of
 github repositories and even building, testing, and benchmarking inside
