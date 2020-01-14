@@ -1,4 +1,4 @@
-package util;
+package sparsearray.util;
 
 import static org.junit.Assert.assertEquals;
 
