@@ -6,6 +6,7 @@ import java.util.TreeMap;
 /**
  * An implementation of {@code SparseArray} that uses a map as the container.
  */
+@SuppressWarnings("unchecked")
 public class SparseArrayMap<T> extends SparseArray<T> {
   private TreeMap<Integer, T> map = new TreeMap<>();
 
