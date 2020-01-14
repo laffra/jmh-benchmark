@@ -34,7 +34,7 @@ in three different formats:
 
  # Getting Started
 
- This JMH benchmark in this repo was developed using VS Code. Here are the steps
+ The JMH benchmark in this repo was developed using VS Code. Here are the steps
  I followed:
   - Install [VSCode](https://code.visualstudio.com/download) 
   - Install the 
@@ -83,7 +83,7 @@ the browser.
 The editing experience is very much like using a locally installed VS Code,
 except for it being hosted in the browser: 
 
-![Alt text](images/editing-experience.png)
+![Alt text](images/gitpod-editing-experience.png)
 
 As part of the build, the unit tests are executed using 
 [Apache Maven Surefire](https://github.com/apache/maven-surefire):
