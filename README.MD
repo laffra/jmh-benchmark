@@ -13,7 +13,7 @@ The golden rule of performance is that it is a space-time tradeoff. So, if we
 are saving space, what are we sacrificing in performance? That is the goal of
 the JMH benchmark we show here.
 
-Jave benchmarks are hard to write correctly. The 
+Java benchmarks are hard to write correctly. The 
 [JMH benchmark](http://tutorials.jenkov.com/java-performance/jmh.html) 
 offers a testing harness that collects all lessons learned from many different
 testing harnesses developed in the past. Things to worry about are properly warming
@@ -28,7 +28,7 @@ in three different formats:
  - As a set of two arrays using binary search on the keys
 
  Option 3 is the most memory efficient, not having the overhead of an array 
- list, not the autoboxing overhead of Java collections, such as `TreeMap`. 
+ list. It also does not have the autoboxing overhead of Java collections, such as `TreeMap`. 
  What we would like to know is which one performs best, performance wise.
  In other words, which one gives us the best space-time tradeoff?
 
