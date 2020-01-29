@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * An implementation of {@code SparseArray} that uses an ArrayList as the container.
- */
 public class SparseArrayList<T> extends SparseArray<T> {
   private ArrayList<T> list = new ArrayList<>();
 
