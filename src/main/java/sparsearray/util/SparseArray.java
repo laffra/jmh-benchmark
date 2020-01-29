@@ -60,13 +60,10 @@ public class SparseArray<T> {
 
   private void insert(int index, int key, T value) {
     this.ensureCapacity();
-
     System.arraycopy(this.keys, index, this.keys, index+1, this.capacity - index - 1);
     this.keys[index] = key;
-
     System.arraycopy(this.values, index, this.values, index+1, this.capacity - index - 1);
     this.values[index] = value;
-
     this.size++;
   }
 
